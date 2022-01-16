@@ -12,17 +12,13 @@ import (
 //MongoQueryBuilder Interface for all mongo query functions
 type MongoQueryBuilder interface {
 	Connection(conn *mongodb.Connection) MongoQueryBuilder
-	// Collection(string) MongoQueryBuilder
-	// Database(string) MongoQueryBuilder
 	WithContext(context.Context) MongoQueryBuilder
 	GetQueryer(db string, collection string) MongoQueryBuilder
 	FindOne(req map[string]interface{}, result interface{}) error
 }
 
 type queryBuilder struct {
-	dbConn *mongodb.Connection
-	// database   string
-	// collection string
+	dbConn  *mongodb.Connection
 	ctx     context.Context
 	cancel  context.CancelFunc
 	queryer *mongo.Collection
@@ -33,24 +29,12 @@ func (cb *queryBuilder) Connection(conn *mongodb.Connection) MongoQueryBuilder {
 	return cb
 }
 
-// func (cb *queryBuilder) Database(database string) MongoQueryBuilder {
-// 	cb.database = database
-// 	return cb
-// }
-
-// func (cb *queryBuilder) Collection(collection string) MongoQueryBuilder {
-// 	cb.collection = collection
-// 	return cb
-// }
-
 func (cb *queryBuilder) WithContext(ctx context.Context) MongoQueryBuilder {
 	cb.ctx = ctx
 	return cb
 }
 
 func (cb *queryBuilder) GetQueryer(db string, collection string) MongoQueryBuilder {
-	// mongodb.Connect("mongodb://localhost:27017")
-	// connection := mongodb.NewConnection()
 	cb.queryer = cb.dbConn.Database(db).Collection(collection)
 	return cb
 }
